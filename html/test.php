@@ -88,7 +88,7 @@ include_once 'testhead.php';
       </div>
 
       <li class="nav-item active">
-        <a class="nav-link" href="<?= Inaki::path(); ?>app/regions">
+        <a class="nav-link" href="<?= Inaki::path(); ?>app/regionals">
           <i class="fa fa-fw fa-play"></i>
           <span>Regionals</span>
         </a>
@@ -234,6 +234,10 @@ include_once 'testhead.php';
                 Inaki::render('user/practice');
                 break;
 
+              case 'regionals':
+                Inaki::render('user/regionals');
+                break;
+
               case 'buy':
                 Inaki::render('user/study');
                 break;
@@ -272,8 +276,8 @@ include_once 'testhead.php';
       <!-- Footer -->
       <footer class="sticky-footer bg-white">
         <div class="container my-auto">
-          <div class="copyright text-center my-auto">
-            <span>Copyright &copy; <?= Inaki::app_name(); ?> <?= date('Y'); ?> Powered by <a>Crud Automated Systems</a></span>
+          <div class="copyright text-center my-auto small">
+            <span>Copyright &copy; <?= Inaki::app_name(); ?> <?= date('Y'); ?> Powered by <a class="text-muted" target="_blank" href="https://blavitch.com">Crud Automated Systems</a></span>
           </div>
         </div>
       </footer>

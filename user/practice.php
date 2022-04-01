@@ -27,7 +27,7 @@ if (empty($payment) || empty($paymentForStudyMaterial)) { ?>
                             echo "d-none";
                         } ?>" data-ref="<?= token(); ?>">
     <div data-ref="<?= token(); ?>" class="row">
-        <div class="col-md-8 col-sm-12 col-lg-8 echelon" data-hook="<?= token(); ?>">
+        <div class="col-md-8 col-sm-12 col-lg-8 echelon mx-auto" data-hook="<?= token(); ?>">
             <div class="card shadow mb-4">
                 <div data-ref="<?= token(); ?>" class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
                     <h6 class="m-0 font-weight-bold text-gray-600">Practice | unlimited practice</h6>
@@ -104,39 +104,7 @@ if (empty($payment) || empty($paymentForStudyMaterial)) { ?>
 
         </div>
 
-        <div class="col-lg-4 col-md-4 col-sm-12">
-            <div class="card text-center">
-                <div class="card-header">
-                    Result
-                </div>
-                <div class="card-body">
-                    <table class="table table-bordered">
-                        <thead>
-                            <tr>
 
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <th scope="row" class="text-left">Attempted</th>
-                                <td id="demanddfa" style="font-weight:bolder"></td>
-                            </tr>
-
-
-                            <tr>
-                                <th scope="row" class="text-left">Score</th>
-                                <td id="fdllatv" style="font-weight:bolder"></td>
-
-                            </tr>
-                        </tbody>
-                    </table>
-
-                </div>
-                <div class="card-footer text-muted">
-                    <span id="fluffy"></span>
-                </div>
-            </div>
-        </div>
 
     </div>
 </div>
@@ -171,7 +139,7 @@ if (empty($payment) || empty($paymentForStudyMaterial)) { ?>
         $.ajax({
 
             type: 'post',
-            url: '<?= Inaki::path() ?>p/<?= md5(time()); ?>?truestynm',
+            url: '<?= Inaki::path() ?>pf/<?= md5(time()); ?>?truestynm',
             data: $("#answerForm").serialize(),
             success: function(rs) {
 
@@ -193,13 +161,13 @@ if (empty($payment) || empty($paymentForStudyMaterial)) { ?>
 
 
     function Score() {
-        $.get('<?= Inaki::path() ?>p?isa&<?= token() . sha1(time()); ?>', function(data) {
+        $.get('<?= Inaki::path() ?>pf?type=practice&isa&<?= token() . sha1(time()); ?>', function(data) {
             $('#fdllatv').html(data);
         });
     }
 
     function attemped() {
-        $.get('<?= Inaki::path() ?>p?isas&<?= token() . sha1(time()); ?>', function(data) {
+        $.get('<?= Inaki::path() ?>pf?isas&<?= token() . sha1(time()); ?>', function(data) {
             $('#demanddfa').html(data);
         });
     }
@@ -271,11 +239,11 @@ if (empty($payment) || empty($paymentForStudyMaterial)) { ?>
         $("#igla").addClass("hd");
         $.ajax({
             type: "GET",
-            url: '<?= Inaki::path() ?>p/<?= token() ?>/i?HOzRz7sso_chgfdshgiiOJlzEVpYBpgFyT67w_SFek/<?= md5(time()); ?>?egret&slug',
+            url: '<?= Inaki::path() ?>pf?egret&slug',
             success: function(data) {
                 const rem = JSON.parse(data);
-
-                if (parseInt(rem.counter) > 30) {
+                console.log(rem);
+                if (parseInt(rem.counter) > 3000000000000000) {
                     Score();
                     attemped();
                     $("#rightleft").html('<p class="alert alert-danger text-center">You have completed your preliminary</p>');

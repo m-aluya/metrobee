@@ -41,31 +41,9 @@ class WordFetcher
     public static function fetch($user)
     {
         global $link;
-        $untapped = $link->query("select id from wordmap");
-        $wordly = [];
-        while ($row = mysqli_fetch_array($untapped)) {
-            $wordly[] = $row['id'];
-        }
-
-        $taken = self::check($user);
-
-        $wordPool = array_diff($wordly, $taken);
-
-        (int)$tz = count($wordly);
-        $fade = $wordPool[array_rand($wordPool)];
-        if (count($wordPool) < 1) {
-            $fade = $wordly[rand(1, $tz)];
-            self::writeTaken($user, array_rand($wordly));
-        } else {
-
-            self::writeTaken($user, $fade);
-        }
 
 
-
-
-
-        $sql = "select id,path from wordmap where id = '$fade' limit 1";
+        $sql = "select id,path from practice order by rand() limit 1";
         $result = $link->query($sql);
 
 
@@ -82,7 +60,7 @@ class WordFetcher
         $data['id'] = $etap['id'];
         $data['path'] = $etap['path'];
         $data['time'] = $_SERVER['REQUEST_TIME'];
-        $data['pik'] = $fade;
+        $data['pik'] = $etap['id'];
         //$data['taken'] = $taken;
         //$data['wordpool'] = $wordPool;
         return $data;
@@ -91,7 +69,7 @@ class WordFetcher
     public static function grader($id, $word, $user)
     {
         global $link;
-        $ida = $link->query("select word from wordmap where id = '$id' limit 1");
+        $ida = $link->query("select word from practice where id = '$id' limit 1");
         $result = mysqli_fetch_assoc($ida);
 
         $word1 = strtoupper(trim($result['word']));
@@ -111,7 +89,7 @@ class WordFetcher
 
 
 
-        self::save($word, $user, $score);
+        //self::save($word, $user, $score);
 
 
 
