@@ -46,7 +46,6 @@ class WordFetcher
     public static function check($user)
     {
         global $link;
-        $data = [];
         $sql = "select wid from taken where user = '$user'";
         $result = $link->query($sql);
 
@@ -56,51 +55,41 @@ class WordFetcher
     public static function fetch($user)
     {
         global $link;
-
-        $untapped = $link->query("select id from wordmap");
-        $wordly = [];
-        while ($row = mysqli_fetch_array($untapped)) {
-            $wordly[] = $row['id'];
-        }
-
-        $taken = self::check($user);
-
-        $wordPool = array_diff($wordly, $taken);
-
-        (int)$tz = count($wordly);
-        $fade = $wordPool[array_rand($wordPool)];
-        if (count($wordPool) < 1) {
-            $fade = $wordly[rand(1, $tz)];
-            self::writeTaken($user, array_rand($wordly));
+        if (count(self::check($user))  == 30) {
+            return false;
         } else {
 
-            self::writeTaken($user, $fade);
+            $untapped = $link->query("select id from wordmap");
+            $wordly = [];
+            while ($row = mysqli_fetch_array($untapped)) {
+                $wordly[] = $row['id'];
+            }
+
+            $taken = self::check($user);
+
+            $wordPool = array_diff($wordly, $taken);
+
+            (int)$tz = count($wordly);
+            $fade = $wordPool[array_rand($wordPool)];
+            if (count($wordPool) < 1) {
+                $fade = $wordly[rand(1, $tz)];
+                self::writeTaken($user, array_rand($wordly));
+            } else {
+
+                self::writeTaken($user, $fade);
+            }
+            $sql = "select id,path from wordmap where id = '$fade' limit 1";
+            $result = $link->query($sql);
+            $data = [];
+            $etap = mysqli_fetch_assoc($result);
+            $data['counter'] = self::gateKeeper($user);
+            $data['id'] = $etap['id'];
+            $data['path'] = $etap['path'];
+            $data['time'] = $_SERVER['REQUEST_TIME'];
+            $data['score'] = self::userScore($user);
+            $data['pik'] = $fade;
+            return $data;
         }
-
-
-
-
-
-        $sql = "select id,path from wordmap where id = '$fade' limit 1";
-        $result = $link->query($sql);
-
-
-
-
-
-
-
-        $data = [];
-
-
-        $etap = mysqli_fetch_assoc($result);
-        $data['counter'] = self::gateKeeper($user);
-        $data['id'] = $etap['id'];
-        $data['path'] = $etap['path'];
-        $data['time'] = $_SERVER['REQUEST_TIME'];
-        $data['score'] = self::userScore($user);
-        $data['pik'] = $fade;
-        return $data;
     }
 
     public static function grader($id, $word, $user, $wid)
