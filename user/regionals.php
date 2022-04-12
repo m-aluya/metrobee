@@ -17,23 +17,57 @@
 <?php
 global $link;
 $user = $_SESSION['raws']['email'];
-(int)$prelimScore = mysqli_fetch_assoc($link->query("select SUM(score) as pscore from prelim where user = '$user'"))['pscore'];
+(int)$prelimScore = mysqli_fetch_assoc($link->query("select COUNT(id) as pscore from prelim where score = 0 and user = '$user'"))['pscore'];
+
+function Notest()
+{
+?>
+    <div class="alert alert-danger text-center">
+        <strong>Regionals can only be taken on desktop computer.</strong>
+    </div>
+<?php }
 
 
-
-
-if ($prelimScore < 3) {
+if ($prelimScore < 20) {
     echo Inaki::alertError(
         "Your preliminary score is less than 20, <br/>hence you cannot partake in the regionals the moment."
     );
 }
 
+require_once "Mobile_Detect.php";
+$detect = new Mobile_Detect;
+
+
+
+// Any mobile device (phones or tablets).
+if ($detect->isMobile()) {
+    Notest();
+}
+
+// Any tablet device.
+if ($detect->isTablet()) {
+    Notest();
+}
+
+
+
 ?>
 
 
-<div class="<?php if ($prelimScore < 1) {
-                echo 'd-none';
-            }   ?> container" data-ref="<?= token(); ?>">
+<div class="   <?php if ($prelimScore < 20) {
+                    echo 'd-none';
+                }
+
+                if ($detect->isTablet()) {
+                    echo 'd-none';
+                }
+
+                if ($detect->isMobile()) {
+                    echo 'd-none';
+                }
+
+
+                ?> container" data-ref="<?= token(); ?>">
     <div data-ref="<?= token(); ?>" class="row">
         <div class="col-md-8 col-sm-12 col-lg-8 echelon" data-hook="<?= token(); ?>">
             <div class="card shadow mb-4">
@@ -74,7 +108,7 @@ if ($prelimScore < 3) {
                                 <div class="form-group">
                                     <label style="margin-bottom:0px" for="email">Enter your answer here</label>
                                     <input type="hidden" name="id" id="quid" /><input type="hidden" name="dave" value="<?= token(); ?>" />
-                                    <input autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" name="ans" type="text" class="form-control" style="width:100%; text-transform: uppercase; font-weight: bolder; font-size: 27px" autofocus>
+                                    <input spellcheck="false" autocomplete="new-password" autocorrect="off" autocapitalize="off" spellcheck="false" name="ans" type="text" class="form-control" style="width:100%; text-transform: uppercase; font-weight: bolder; font-size: 27px" autofocus>
                                 </div>
 
                                 <div class="form-group">
@@ -284,10 +318,17 @@ if ($prelimScore < 3) {
                 const rem = JSON.parse(data);
                 console.log(rem);
 
-                if (parseInt(rem.counter) > 30) {
+                if (parseInt(rem.counter) == 30) {
                     Score();
                     attemped();
-                    $("#rightleft").html('<p class="alert alert-danger text-center">You have completed your preliminary</p>');
+                    if (rem.score > 24) {
+                        $("#rightleft").html('<p class="alert alert-success text-center">You have completed your regionals. Congratulations! You have qualified for the next round.</p>');
+
+                    } else {
+                        $("#rightleft").html('<p class="alert alert-danger text-center">You have completed your regionals. Unfortunately, you have not qualified for the next round. Contact Admin if you wish to try again.</p>');
+
+                    }
+
 
                 } else {
 

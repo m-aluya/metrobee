@@ -2,6 +2,15 @@
 class WordFetcher
 {
 
+    public static function userScore($user)
+    {
+        global $link;
+        $sql = "select score from regionals_score where user = '$user' and score = 0";
+        $result = $link->query($sql) or die(mysqli_error($link));
+        return mysqli_num_rows($result);
+    }
+
+
     public static function gateKeeper($user)
     {
         global $link;
@@ -9,9 +18,11 @@ class WordFetcher
         return mysqli_num_rows($link->query($sql));
     }
 
-    public static function save($word, $user, $score)
+    public static function save($word, $user, $score, $wid)
     {
         global $link;
+        $link->query("delete from regionals_score where user = '$user' and wid = '$wid'");
+        $link->query("delete from taken where user = '$user' and wid = '$wid'");
         $link->query("insert into regionals_score(user,word,score)value('$user','$word','$score')");
         return false;
     }
@@ -83,12 +94,13 @@ class WordFetcher
         $data['path'] = $etap['path'];
         $data['time'] = $_SERVER['REQUEST_TIME'];
         $data['pik'] = $fade;
+        $data['score'] = self::userScore($user);
         //$data['taken'] = $taken;
         //$data['wordpool'] = $wordPool;
         return $data;
     }
 
-    public static function grader($id, $word, $user)
+    public static function grader($id, $word, $user, $wid)
     {
         global $link;
         $ida = $link->query("select word from regionals where id = '$id' limit 1");
@@ -111,7 +123,7 @@ class WordFetcher
 
 
 
-        self::save($word, $user, $score);
+        self::save($word, $user, $score, $wid);
 
 
 
@@ -149,7 +161,7 @@ if (isset($_GET['slug'])) {
 
 if (isset($_POST['dave']) && isset($_GET['truestynm'])) {
     header('Content-Type: application/json');
-    $vlader = WordFetcher::grader(intval($_POST['id']), strtoupper(filter_input(INPUT_POST, 'ans', FILTER_SANITIZE_STRING)), $_SESSION['raws']['email']);
+    $vlader = WordFetcher::grader(intval($_POST['id']), strtoupper(filter_input(INPUT_POST, 'ans', FILTER_SANITIZE_STRING)), $_SESSION['raws']['email'], $_POST['id']);
     echo $vlader;
 }
 

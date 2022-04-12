@@ -48,10 +48,10 @@ class Wd
     {
 
         global $link;
-        $sql = $link->query("select id,word from $table");
+        $sql = $link->query("select id,word,path from $table");
         if (mysqli_num_rows($sql) > 0) {
             while ($row = mysqli_fetch_array($sql)) {
-                echo '<tr><td>' . strtoupper($row['word']) . '</td> <td><a data-ridge="' . strtoupper($row['word']) . '" class="edited"  href="#" id="sjfsfh' . token()  . $row['id'] . '"  data-edit="' . $row['id'] . '">Edit</a></td>  <td><a class="text-danger"  href="' . Inaki::path() . 'console/word?' . time() . '&type=' . $table . '&delete=' . $row['id'] . '">Delete</a></td></tr>';
+                echo '<tr><td>' . strtoupper($row['word']) . '</td> <td><a data-ridge="' . strtoupper($row['word']) . '" class="edited"  href="#" id="sjfsfh' . token()  . $row['id'] . '"  data-edit="' . $row['id'] . '">Edit</a></td>  <td><a onclick="return confirm("Are you sure?")" class="text-danger"  href="' . Inaki::path() . 'console/word?' . time() . '&payload=' . $row['path'] . '&type=' . $table . '&delete=' . $row['id'] . '">Delete</a></td></tr>';
             }
         } else {
             echo Inaki::alertError("You\ve not added any word");
@@ -66,6 +66,7 @@ class Wd
         global $link;
 
         $sql = $link->query("delete from $table where id = '$id' limit 1");
+
         if ($sql) {
             echo '<div class="modal" tabindex="-1" role="dialog" id="ddted">
   <div class="modal-dialog" role="document">
@@ -105,6 +106,16 @@ class Wd
 
 
 ?>
+
+<?php
+if (isset($_SESSION[Inaki::$anchor]) && !empty($_GET['delete'])) {
+
+    Wd::deleteWord($_GET['delete'], $_GET['type']);
+    unlink(trim($_GET['payload']));
+}
+
+?>
+
 <h3 class="text-center">Add new words</h3>
 <?php
 if (isset($_POST['tga']) && !empty($_POST['editer'])) {
@@ -223,9 +234,9 @@ if (isset($_POST['tga']) && !empty($_POST['editer'])) {
     <div class="container">
         <div class="row">
             <div class="col-md-6 shadow p-3 bg-white rounded">
-                <h2>Preliminary</h2>
+                <h2>Preliminary [<?= mysqli_fetch_array($link->query("select count(id) as np from wordmap"))['np'] ?>]</h2>
                 <div class="table-responsive">
-                    <table class="table table-bordered dataTable daTable" style="width:100%" id="myTable">
+                    <table class="table table-bordered" style="width:100%">
                         <thead>
                             <tr>
                                 <th>Word</th>
@@ -243,7 +254,7 @@ if (isset($_POST['tga']) && !empty($_POST['editer'])) {
                 </div>
             </div>
             <div class="col-md-6 shadow p-3 bg-white rounded">
-                <h2>Regionals</h2>
+                <h2>Regionals [<?= mysqli_fetch_array($link->query("select count(id) as np from regionals"))['np'] ?>]</h2>
                 <div class="table-responsive">
                     <table class="table table-bordered dataTable daTable" style="width:100%" id="myTable">
                         <thead>
@@ -265,7 +276,7 @@ if (isset($_POST['tga']) && !empty($_POST['editer'])) {
         </div>
         <div class="row">
             <div class="col-md-6 mt-5 shadow p-3 rounded bg-white">
-                <h2>Practice</h2>
+                <h2>Practice [<?= mysqli_fetch_array($link->query("select count(id) as np from practice"))['np'] ?>]</h2>
                 <div class="table-responsive">
                     <table class="table table-bordered dataTable daTable" style="width:100%" id="myTable">
                         <thead>
@@ -292,12 +303,7 @@ if (isset($_POST['tga']) && !empty($_POST['editer'])) {
 </div>
 
 
-<?php
-if (isset($_SESSION[Inaki::$anchor]) && !empty($_GET['delete'])) {
-    //Wd::deleteWord(intval($_GET['delete'], $_GET['id'], $_GET['type']));
-}
 
-?>
 
 
 

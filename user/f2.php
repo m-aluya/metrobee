@@ -17,7 +17,7 @@
         <div class="col-md-8 col-sm-12 col-lg-8 echelon" data-hook="<?= token(); ?>">
             <div class="card shadow mb-4">
                 <div data-ref="<?= token(); ?>" class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
-                    <h6 class="m-0 font-weight-bold text-gray-600">Preliminary</h6>
+                    <h6 class="m-0 font-weight-bold text-gray-600">Preliminaries</h6>
 
                 </div>
 
@@ -27,7 +27,7 @@
                     <div class="row">
                         <div class="col text-center">
                             <figure id="rightleft" data-set="<?= token(); ?>"></figure>
-                            <form data-ref="<?= token(); ?>" method="GET" action="#" id="asider" style="margin-top: 5em">
+                            <form autocomplete="off" data-ref="<?= token(); ?>" method="GET" action="#" id="asider" style="margin-top: 5em">
                                 <p id="ffg"></p>
                                 <button type="button" id="igla" class="btn btn-primary long-btn"><i class='fa fa-play' aria-hiddeb='true'></i> Start</button>
                             </form>
@@ -47,13 +47,13 @@
                     </div>
                     <div class="row">
                         <div class="col text-centerr">
-                            <form class="drent" id="answerForm" style="display:none" autocomplete="off">
+                            <form class="drent" id="answerForm" style="display:none" autocomplete="nope">
 
 
                                 <div class="form-group">
                                     <label style="margin-bottom:0px" for="email">Enter your answer here</label>
                                     <input type="hidden" name="id" id="quid" /><input type="hidden" name="dave" value="<?= token(); ?>" />
-                                    <input autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" name="ans" type="text" class="form-control" style="width:100%; text-transform: uppercase; font-weight: bolder; font-size: 27px" autofocus>
+                                    <input spellcheck="false" autocomplete="nope" autocorrect="off" autocapitalize="off" spellcheck="false" name="ans" type="text" class="form-control" style="width:100%; text-transform: uppercase; font-weight: bolder; font-size: 27px" autofocus>
                                 </div>
 
                                 <div class="form-group">
@@ -261,11 +261,18 @@
             url: '<?= Inaki::path() ?>p/<?= token() ?>/i?HOzRz7sso_chgfdshgiiOJlzEVpYBpgFyT67w_SFek/<?= md5(time()); ?>?egret&slug',
             success: function(data) {
                 const rem = JSON.parse(data);
+                console.log(rem);
 
-                if (parseInt(rem.counter) > 30) {
+                if (parseInt(rem.counter) == 30) {
                     Score();
                     attemped();
-                    $("#rightleft").html('<p class="alert alert-danger text-center">You have completed your preliminary</p>');
+                    if (rem.score > 19) {
+                        $("#rightleft").html('<p class="alert alert-success text-center">You have completed your preliminaries. Congratulations! You have qualified for the Regionals!</p>');
+
+                    } else {
+                        $("#rightleft").html('<p class="alert alert-danger text-center">You have completed your preliminaries. Unfortunately, you have not qualified for the Regionals. Contact Admin if you wish to try again.</p>');
+
+                    }
 
                 } else {
 

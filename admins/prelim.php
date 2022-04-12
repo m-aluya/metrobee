@@ -19,15 +19,35 @@ class Preliminary
 
 if (isset($_GET['restart'])) {
   $user = $_GET['restart'];
-  $rst = $link->query("delete from prelim where user = '$user'");
-  echo Inaki::alertSuccess('Restart Successful');
+  $link->query("delete from prelim where user = '$user'");
+  $link->query("delete from taken where user = '$user'");
+  echo Inaki::alertSuccess('Restart Successful for the selected user.');
 }
 
 
 ?>
 
 
-<h1 class="h3 mb-2 text-gray-800">Preliminary</h1>
+<div class="row">
+  <div class="col-md-6">
+    <h1 class="h3 mb-2 text-gray-800">Preliminary</h1>
+  </div>
+  <div class="col-md-6 text-right">
+    <a class="btn btn-danger px-4" onclick="return confirm('Are you sure you want to do it?')" href="<?= Inaki::path() ?>console/prelim?rs=all">Restart Preliminary</a>
+  </div>
+</div>
+
+<?php
+if (isset($_GET['rs']) && $_GET['rs'] == 'all') {
+
+  $link->query("delete from prelim");
+  $link->query("delete from taken");
+
+  echo Inaki::alertSuccess('Restart Successful for all.');
+}
+
+
+?>
 
 <div class="card shadow mb-4">
   <div class="card-header py-3">
