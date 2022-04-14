@@ -52,11 +52,26 @@ class WordFetcher
         return mysqli_fetch_assoc($result);
     }
 
+    public static function countPrelim($user)
+    {
+        global $link;
+        $sql = "select id from prelim where user = '$user'";
+        $result = $link->query($sql);
+
+        return mysqli_num_rows($result);
+    }
+
+
+
     public static function fetch($user)
     {
         global $link;
-        if (count(self::check($user))  == 30) {
-            return false;
+        if (self::countPrelim($user) >= 30) {
+            $data = [];
+            $data['counter'] = self::countPrelim($user);
+            $data['time'] = $_SERVER['REQUEST_TIME'];
+            $data['score'] = self::userScore($user);
+            return $data;
         } else {
 
             $untapped = $link->query("select id from wordmap");
@@ -82,7 +97,7 @@ class WordFetcher
             $result = $link->query($sql);
             $data = [];
             $etap = mysqli_fetch_assoc($result);
-            $data['counter'] = self::gateKeeper($user);
+            $data['counter'] =  self::countPrelim($user);
             $data['id'] = $etap['id'];
             $data['path'] = $etap['path'];
             $data['time'] = $_SERVER['REQUEST_TIME'];
@@ -153,7 +168,7 @@ if (isset($_GET['slug'])) {
 
 if (isset($_POST['dave']) && isset($_GET['truestynm'])) {
     header('Content-Type: application/json');
-    $vlader = WordFetcher::grader(intval($_POST['id']), strtoupper(filter_input(INPUT_POST, 'ans', FILTER_SANITIZE_STRING)), $_SESSION['raws']['email'], $_POST['id']);
+    $vlader = WordFetcher::grader(intval($_POST['id']), strtoupper(filter_input(INPUT_POST, 'ans', FILTER_DEFAULT)), $_SESSION['raws']['email'], $_POST['id']);
     echo $vlader;
 }
 

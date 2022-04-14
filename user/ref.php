@@ -7,7 +7,7 @@ class Ref
     $sql = "select firstname,amount from users where ref = '$userid' and paid = 1";
     $result = $link->query($sql);
     if (mysqli_num_rows($result) < 1) {
-      echo Inaki::alertError("You've not referred anyone");
+      echo "<p>You've not referred anyone. Share your link with your friends and earn money!</p>";
     } else {
       echo '
                <div class="table-responsive">
